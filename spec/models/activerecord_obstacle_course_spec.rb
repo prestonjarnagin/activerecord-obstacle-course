@@ -110,7 +110,7 @@ describe 'ActiveRecord Obstacle Course' do
     # ------------------------------------------------------------
 
     # ------------------ Using ActiveRecord ----------------------
-    items = Item.find(ids)
+    items = Item.where(id: ids)
     # ------------------------------------------------------------
 
     # Expectation
@@ -317,7 +317,7 @@ describe 'ActiveRecord Obstacle Course' do
     # ------------------------------------------------------------
 
     # ------------------ Using ActiveRecord ----------------------
-    users = User.joins(:items).where(items:{name: "Thing 8"}).uniq.pluck(:name)
+    users = User.joins(:items).where(items:{name: item_8.name}).uniq.pluck(:name)
     # ------------------------------------------------------------
 
     # Expectation
@@ -332,7 +332,7 @@ describe 'ActiveRecord Obstacle Course' do
     # ------------------------------------------------------------
 
     # ------------------ Using ActiveRecord ----------------------
-    names = Order.last.items.all.pluck(:name)
+    names = Order.last.items.pluck(:name)
     # ------------------------------------------------------------
 
     # Expectation
@@ -420,7 +420,7 @@ describe 'ActiveRecord Obstacle Course' do
     # -----------------------------------------------------------
 
     # ------------------ Using ActiveRecord ---------------------
-    total_sales = User.joins(:orders).where.not(id: 2).sum('orders.amount')
+    total_sales = Order.where.not(user_id: 2).sum(:amount)
     # -----------------------------------------------------------
 
     # Expectation
@@ -436,7 +436,7 @@ describe 'ActiveRecord Obstacle Course' do
     # -----------------------------------------------------------
 
     # ------------------ Improved Solution ----------------------
-    orders = Order.joins(:items).where('items.id = 4')
+    orders = Order.joins(:items).where('items.id = ?', 4)
     # -----------------------------------------------------------
 
     # Expectation
@@ -508,7 +508,9 @@ describe 'ActiveRecord Obstacle Course' do
     # ------------------------------------------------------------
 
     # ------------------ ActiveRecord Solution ----------------------
-    ordered_items_names = Item.joins(:orders).uniq.pluck(:name)
+    ordered_items_names = Item.joins(:orders).
+      uniq.
+      pluck(:name)
     # ---------------------------------------------------------------
 
     # Expectations
@@ -528,7 +530,8 @@ describe 'ActiveRecord Obstacle Course' do
     # Sal        |         5
 
     # ------------------ ActiveRecord Solution ----------------------
-    custom_results = User.joins(:orders).select(:name, 'COUNT(orders.id) AS total_order_count').group(:name)
+    custom_results = User.joins(:orders).select(:name, 'COUNT(orders.id) AS total_order_count').
+      group(:name)
     # ---------------------------------------------------------------
 
     expect(custom_results[0].name).to eq(user_3.name)
@@ -551,7 +554,9 @@ describe 'ActiveRecord Obstacle Course' do
     # Dione      |         20
 
     # ------------------ ActiveRecord Solution ----------------------
-    custom_results = User.joins(:items).select(:name, 'COUNT(items.id) AS total_item_count').group(:name).order(name: :desc)
+    custom_results = User.joins(:items).select(:name, 'COUNT(items.id) AS total_item_count').
+      group(:name).
+      order(name: :desc)
     # ---------------------------------------------------------------
 
     expect(custom_results[0].name).to eq(user_2.name)
@@ -597,7 +602,10 @@ describe 'ActiveRecord Obstacle Course' do
     # how will you turn this into the proper ActiveRecord commands?
 
     # ------------------ ActiveRecord Solution ----------------------
-    data = User.joins(:order_items).select('users.name AS user_name', 'order_items.order_id AS order_id', 'COUNT(order_items.item_id) AS item_count').group(:name, :order_id).order(name: :desc)
+    data = User.joins(:order_items).
+      select('users.name AS user_name', 'order_items.order_id AS order_id', 'COUNT(order_items.item_id) AS item_count').
+      group(:name, :order_id).
+      order(name: :desc)
     # ---------------------------------------------------------------
 
 
