@@ -615,7 +615,7 @@ describe 'ActiveRecord Obstacle Course' do
   it '30. returns the names of items that have been ordered without n+1 queries' do
     # What is an n+1 query?
     # This video is older, but the concepts explained are still relevant:
-    # http://railscasts.com/episodes/372-bullet
+    # http://railscasts.com/episodes/372-
 
     # Don't worry about the lines containing Bullet. This is how we are detecting n+1 queries.
     Bullet.enable = true
